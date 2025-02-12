@@ -1,0 +1,1 @@
+export const ZOOM_SERVICE_TOKEN = 'ZOOM_SERVICE_TOKEN';

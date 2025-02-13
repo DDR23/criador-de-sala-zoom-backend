@@ -3,6 +3,7 @@ import { ZoomController } from './infra/zoom.controller';
 import { ZOOM_SERVICE_TOKEN } from './utils/zoomServiceToken';
 import { ZoomRepository } from './infra/zoom.repository';
 import { CreateZoomService } from './services/createZoom.service';
+import { GenerateZoomAccessTokenService } from './services/generateZoomAccessToken.service';
 
 @Module({
   controllers: [
@@ -14,6 +15,7 @@ import { CreateZoomService } from './services/createZoom.service';
       useClass: ZoomRepository,
     },
     CreateZoomService,
+    GenerateZoomAccessTokenService,
   ],
 })
 export class ZoomModule { }

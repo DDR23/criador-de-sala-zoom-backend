@@ -2,23 +2,22 @@ import { Inject, Injectable } from "@nestjs/common";
 import { ZOOM_SERVICE_TOKEN } from "../utils/zoomServiceToken";
 import { IZoomRepositories } from "../domain/repositories/IZoomRepositories";
 import { CreateZoomDto } from "../domain/dto/create-zoom.dto";
+import { GenerateZoomAccessTokenService } from "./generateZoomAccessToken.service";
 
 @Injectable()
 export class CreateZoomService {
-  private readonly ZOOM_API_URL = process.env.ZOOM_API_URL || "";
-  private readonly ZOOM_ACCESS_TOKEN = process.env.ZOOM_ACCESS_TOKEN || "";
+  private readonly ZOOM_API_URL = "https://api.zoom.us/v2/users/me/meetings";
 
   constructor(
     @Inject(ZOOM_SERVICE_TOKEN)
     private readonly zoomRepositories: IZoomRepositories,
-  ) { }
+    private readonly generateZoomAccessTokenService: GenerateZoomAccessTokenService
+  ) {}
 
   async execute(data: CreateZoomDto): Promise<{ url: string }> {
-    if (!this.ZOOM_ACCESS_TOKEN) {
-      throw new Error("O token de acesso do Zoom não está configurado.");
-    }
-
     const zoomapi = this.ZOOM_API_URL;
+    const accessToken = await this.generateZoomAccessTokenService.execute();
+
     const meeting = {
       topic: data.topic,
       type: data.type || 2,
@@ -34,13 +33,18 @@ export class CreateZoomService {
         approval_type: 0,
       },
     };
+
     const headers = {
       headers: {
-        Authorization: `Bearer ${this.ZOOM_ACCESS_TOKEN}`,
+        Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
-      }
+      },
     };
 
-    return this.zoomRepositories.createZoom({ zoomapi, meeting, headers });
+    return this.zoomRepositories.createZoom({
+      zoomapi,
+      meeting,
+      headers,
+    });
   }
 }

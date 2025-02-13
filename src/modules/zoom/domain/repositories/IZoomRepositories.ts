@@ -1,5 +1,5 @@
 export interface IZoomRepositories {
-  createZoom(meetingData: {
+  createZoom(data: {
     zoomapi: string;
     meeting: any;
     headers: any;

@@ -4,8 +4,8 @@ import axios from "axios";
 
 @Injectable()
 export class ZoomRepository implements IZoomRepositories {
-  async createZoom(meetingData: { zoomapi: string; meeting: any; headers: any }): Promise<{ url: string }> {
-    const { zoomapi, meeting, headers } = meetingData;
+  async createZoom(data: { zoomapi: string; meeting: any; headers: any }): Promise<{ url: string }> {
+    const { zoomapi, meeting, headers } = data;
     const response = await axios.post(zoomapi, meeting, headers);
     return { url: response.data.join_url };
   }

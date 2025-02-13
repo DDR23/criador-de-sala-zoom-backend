@@ -14,24 +14,24 @@ export class GenerateZoomAccessTokenService {
   constructor(
     @Inject(ZOOM_SERVICE_TOKEN)
     private readonly zoomRepositories: IZoomRepositories,
-  ) { }
+  ) {}
 
-  async execute(): Promise<string | null> {
+  async execute(): Promise<string> {
     const currentTime = Math.floor(Date.now() / 1000);
 
     if (this.accessToken && this.tokenExpiration && this.tokenExpiration > currentTime) {
       return this.accessToken;
     }
 
-    const response = await this.zoomRepositories.getZoomAccessToken({
+    const { access_token, expires_in } = await this.zoomRepositories.getZoomAccessToken({
       zoomAuthUrl: this.ZOOM_AUTH_URL,
       accountId: this.ACCOUNT_ID,
       clientId: this.CLIENT_ID,
       clientSecret: this.CLIENT_SECRET,
     });
 
-    this.accessToken = response.access_token;
-    this.tokenExpiration = currentTime + response.expires_in;
+    this.accessToken = access_token;
+    this.tokenExpiration = currentTime + expires_in;
 
     return this.accessToken;
   }
